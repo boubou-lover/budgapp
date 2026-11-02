@@ -2,17 +2,24 @@
    Si config.js n'est pas rempli ou si la connexion échoue, l'app reste en mode local. */
 (function(){
  var C=window.BUDGET_CONFIG||{},sb=null,pend=null;
+ var ST={getItem:function(k){try{return sessionStorage.getItem(k)||localStorage.getItem(k)}catch(e){return null}},
+  setItem:function(k,v){try{(localStorage.getItem('budget_rm')==='0'?sessionStorage:localStorage).setItem(k,v)}catch(e){}},
+  removeItem:function(k){try{sessionStorage.removeItem(k);localStorage.removeItem(k)}catch(e){}}};
+ function why(m){window.BKS=m;try{console.warn('[Budget] '+m)}catch(e){}}
  function client(){
   if(sb)return sb;
-  if(!window.supabase||!C.url||!C.anonKey||/VOTRE/.test(C.url+C.anonKey))return null;
-  sb=window.supabase.createClient(C.url,C.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
+  if(!window.supabase){why('bibliothèque Supabase introuvable (le dossier vendor/ est-il bien envoyé ?)');return null}
+  if(!C.url||!C.anonKey||/VOTRE/.test(C.url+C.anonKey)){why('config.js absent ou non rempli');return null}
+  var u=String(C.url).trim().replace(/\/rest\/v1\/?$/,'').replace(/\/+$/,'');
+  try{sb=window.supabase.createClient(u,String(C.anonKey).trim(),{auth:{storage:ST,persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}})}
+  catch(e){why('configuration invalide : '+e.message);return null}
   return sb}
  function login(c){return new Promise(function(res){
   var d=document.createElement('div');d.id='lg';
   d.style.cssText='position:fixed;inset:0;z-index:60;background:var(--bg);color:var(--tx);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;font:15px system-ui,sans-serif';
-  d.innerHTML='<h1 style="margin:0">💶 Mon Budget</h1><input id="lge" type="email" autocomplete="username" placeholder="E-mail" style="width:100%;max-width:300px"><input id="lgp" type="password" autocomplete="current-password" placeholder="Mot de passe" style="width:100%;max-width:300px"><button class="b" id="lgb" style="width:100%;max-width:300px">Se connecter</button><div id="lgm" class="neg"></div>';
-  document.body.appendChild(d);
-  var go=async function(){var m=document.getElementById('lgm');m.textContent='';
+  d.innerHTML='<div class="card" style="width:100%;max-width:340px;display:flex;flex-direction:column;gap:12px;margin:0"><h1 style="margin:0;text-align:center">💶 Mon Budget</h1><input id="lge" type="email" autocomplete="username" placeholder="E-mail"><input id="lgp" type="password" autocomplete="current-password" placeholder="Mot de passe"><label style="display:flex;gap:8px;align-items:center;font-size:14px;color:var(--mu)"><input type="checkbox" id="lgr" checked style="width:auto"> Se souvenir de moi</label><button class="b" id="lgb">Se connecter</button><div id="lgm" class="neg" style="text-align:center"></div></div>';
+  document.body.appendChild(d);try{document.getElementById('lge').value=localStorage.getItem('budget_em')||''}catch(e){}
+  var go=async function(){var m=document.getElementById('lgm');m.textContent='';var rm=document.getElementById('lgr'),em=document.getElementById('lge').value.trim();try{localStorage.setItem('budget_rm',rm&&rm.checked?'1':'0');if(rm&&rm.checked)localStorage.setItem('budget_em',em);else localStorage.removeItem('budget_em')}catch(e){}
    try{var r=await c.auth.signInWithPassword({email:document.getElementById('lge').value.trim(),password:document.getElementById('lgp').value});
     if(r.error){m.textContent='Connexion refusée : '+r.error.message;return}
     d.remove();res(r.data.session)}catch(e){m.textContent='Réseau indisponible.'}};
@@ -21,7 +28,7 @@
  function session(){
   if(pend)return pend;
   pend=(async function(){var c=client();if(!c)return null;
-   try{var r=await c.auth.getSession();if(r.data&&r.data.session)return r.data.session}catch(e){}
+   try{var r=await c.auth.getSession();if(r.data&&r.data.session)return r.data.session}catch(e){why('Supabase injoignable : '+(e&&e.message||e))}
    return login(c)})();
   return pend}
  var DB={
