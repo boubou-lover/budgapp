@@ -60,3 +60,13 @@ svg .hit:hover+circle{transform:scale(1.9);transform-box:fill-box;transform-orig
 .wm{font-size:21px;font-weight:800;letter-spacing:-.03em;color:#16432a}.wm b{color:#559b3f;font-weight:800}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .wm{color:#cfe8d5}:root:not([data-theme="light"]) .wm b{color:#8fd16a}}
 :root[data-theme="dark"] .wm{color:#cfe8d5}:root[data-theme="dark"] .wm b{color:#8fd16a}
+
+/* ===== Réglages : sections coulissantes ===== */
+.acc{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:12px;overflow:hidden}
+.acc .ah{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.acc .ai{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:19px;flex:none}
+.acc .at{flex:1;font-weight:650;display:flex;flex-direction:column;line-height:1.25}.acc .at small{font-weight:400;font-size:12.5px}
+.acc .chev{color:var(--mu);transition:transform .25s}.acc.open .chev{transform:rotate(90deg)}
+.acc .ad{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}.acc.open .ad{grid-template-rows:1fr}
+.acc .ad>div{overflow:hidden;min-height:0}.acc .ab{padding:2px 16px 16px}
+@media(prefers-reduced-motion:reduce){.acc .ad,.acc .chev{transition:none}}
