@@ -30,3 +30,7 @@
 - Offre gratuite : un projet inactif pendant ~1 semaine peut être mis en pause (réactivation en un clic) et il n'y a pas de sauvegarde automatique → exporte une sauvegarde chaque mois.
 - Modifications simultanées du même mois : la dernière écriture gagne.
 - Hors connexion, les données restent sur l'appareil et se resynchronisent à la reconnexion (le premier appareil qui écrit gagne).
+
+## Logo et icône d'écran d'accueil
+- `logo.png` / `logo-256.png` : logo nettoyé (coins arrondis transparents) ; `icon-*.png`, `apple-touch-icon.png`, `favicon-*.png` : icônes générées depuis le logo ; `manifest.webmanifest` : nom et icônes de l'app.
+- Sur iPhone : Safari → Partager → « Sur l'écran d'accueil ». Sur Android (Chrome) : menu ⋮ → « Ajouter à l'écran d'accueil ».
