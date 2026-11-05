@@ -49,7 +49,7 @@ nav button{border-radius:20px;padding:9px 0}nav button.on{background:color-mix(i
 .badge{border-radius:99px;padding:4px 10px}th{color:var(--mu);font-weight:600}.dot{width:9px;height:9px}
 svg [data-tip]{cursor:pointer;transition:opacity .18s,stroke-width .18s,transform .18s}
 svg:hover [data-tip]:not(:hover){opacity:.5}
-svg circle[data-tip]:hover{stroke-width:27}
+svg circle[data-tip]:hover{stroke-width:34}
 svg rect[data-tip]:hover{opacity:1!important;filter:brightness(1.1);transform:translateY(-2px)}
 svg .hit{fill:transparent;opacity:1!important}
 svg .hit:hover+circle{transform:scale(1.9);transform-box:fill-box;transform-origin:center;transition:transform .18s}
@@ -70,3 +70,22 @@ svg .hit:hover+circle{transform:scale(1.9);transform-box:fill-box;transform-orig
 .acc .ad{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}.acc.open .ad{grid-template-rows:1fr}
 .acc .ad>div{overflow:hidden;min-height:0}.acc .ab{padding:2px 16px 16px}
 @media(prefers-reduced-motion:reduce){.acc .ad,.acc .chev{transition:none}}
+
+/* ===== Menu hamburger + tiroir ===== */
+body{padding-bottom:40px}
+.brand{position:sticky;top:0;z-index:20;margin:calc(-1*env(safe-area-inset-top,0px)) auto 0;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;background:color-mix(in srgb,var(--bg) 80%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.burger{margin-left:auto;width:44px;height:44px;border-radius:14px;border:0;background:color-mix(in srgb,var(--ac) 12%,var(--card));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:0;cursor:pointer;box-shadow:var(--sh);-webkit-tap-highlight-color:transparent}
+.burger span{display:block;width:20px;height:2.5px;border-radius:2px;background:var(--tx)}
+#drawer{position:fixed;inset:0;z-index:40;pointer-events:none}
+#drawer .dbg{position:absolute;inset:0;background:rgba(10,20,15,.45);opacity:0;transition:opacity .28s;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+#drawer nav{position:absolute;left:auto;right:0;top:0;bottom:0;width:min(84vw,320px);display:flex;flex-direction:column;gap:4px;padding:calc(16px + env(safe-area-inset-top,0px)) 14px calc(16px + env(safe-area-inset-bottom,0px));border:0;border-radius:26px 0 0 26px;background:var(--card);box-shadow:-12px 0 40px rgba(0,0,0,.22);transform:translateX(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);-webkit-backdrop-filter:none;backdrop-filter:none;overflow:auto}
+#drawer.open{pointer-events:auto}#drawer.open .dbg{opacity:1}#drawer.open nav{transform:none}
+#drawer nav .dh{display:flex;align-items:center;gap:10px;padding:4px 6px 16px}
+#drawer nav .dh img{width:34px;height:34px;border-radius:10px}
+#drawer nav .dh .x{margin-left:auto;width:38px;height:38px;flex:none;border-radius:12px;font-size:18px;background:color-mix(in srgb,var(--mu) 12%,transparent);color:var(--tx);padding:0}
+#drawer nav button{display:flex;align-items:center;gap:14px;flex:none;width:100%;text-align:left;font-size:16px;padding:12px 12px;border-radius:16px;color:var(--tx);background:none;min-width:0}
+#drawer nav button.on{background:color-mix(in srgb,var(--ac) 15%,transparent);color:var(--ac);font-weight:650}
+#drawer nav .mi{width:36px;height:36px;display:grid;place-items:center;border-radius:12px;background:color-mix(in srgb,var(--mu) 11%,transparent);font-size:18px;flex:none}
+#drawer nav .ft{margin-top:auto;padding:12px 8px 0;font-size:12px;color:var(--mu)}
+#undo{position:fixed;right:14px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:25}#undo button{box-shadow:0 8px 22px rgba(0,0,0,.25)}
+@media(prefers-reduced-motion:reduce){#drawer .dbg,#drawer nav{transition:none}}
