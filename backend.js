@@ -28,7 +28,9 @@
  function session(){
   if(pend)return pend;
   pend=(async function(){var c=client();if(!c)return null;
-   try{var r=await c.auth.getSession();if(r.data&&r.data.session)return r.data.session}catch(e){why('Supabase injoignable : '+(e&&e.message||e))}
+   try{var r=await c.auth.getSession();if(r.data&&r.data.session)return r.data.session;
+    if(r.error||navigator.onLine===false){why('Hors connexion : mode local, resynchronisation à la reconnexion');return null}}
+   catch(e){why('Supabase injoignable : '+(e&&e.message||e));return null}
    return login(c)})();
   return pend}
  var DB={
@@ -51,3 +53,5 @@
    return DB},
   signOut:async function(){var c=client();if(c)await c.auth.signOut();location.reload()}};
 })();
+/* Mise en cache : l'app s'ouvre hors connexion (voir sw.js) */
+if('serviceWorker' in navigator&&location.protocol!=='file:'){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(e){console.warn('[Budget] cache indisponible',e)})})}

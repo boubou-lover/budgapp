@@ -34,3 +34,11 @@
 ## Logo et icône d'écran d'accueil
 - `logo.png` / `logo-256.png` : logo nettoyé (coins arrondis transparents) ; `icon-*.png`, `apple-touch-icon.png`, `favicon-*.png` : icônes générées depuis le logo ; `manifest.webmanifest` : nom et icônes de l'app.
 - Sur iPhone : Safari → Partager → « Sur l'écran d'accueil ». Sur Android (Chrome) : menu ⋮ → « Ajouter à l'écran d'accueil ».
+
+## Mise en cache et hors connexion (`sw.js`)
+- Après la première visite, l'app s'ouvre **sans réseau** (fichiers gardés dans le navigateur).
+- Les fichiers de l'app sont chargés **réseau d'abord** : quand tu remplaces des fichiers sur GitHub, la nouvelle version s'applique à l'ouverture suivante avec réseau. Les bibliothèques et images viennent du cache.
+- Supabase n'est **jamais** mis en cache : les données viennent toujours du serveur.
+- Hors connexion, l'app passe en mode local et garde tes saisies sur l'appareil ; à la reconnexion elles sont **fusionnées** avec les données du serveur (une opération supprimée hors ligne peut réapparaître).
+- Pour forcer le renouvellement du cache après une grosse mise à jour : changer `V='budgapp-v1'` en `V='budgapp-v2'` dans `sw.js`.
+- Le cache ne fonctionne qu'en HTTPS (GitHub Pages convient) et n'existe pas sur la version claude.ai.
