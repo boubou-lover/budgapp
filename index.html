@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="style.css">
-</head><body><header class="brand"><img src="icon-pig-72.png" alt="" width="32" height="32"><span class="wm">Budg<b>app</b></span><button class="burger" id="burger" aria-label="Menu" aria-expanded="false" onclick="menu(1)"><span></span><span></span><span></span></button></header><main id="app"></main>
+</head><body><header class="brand"><img src="icon-pig-72.png" alt="" width="32" height="32"><span class="wm">Budg<b>app</b></span><span id="sync" class="sync" style="display:none" onclick="connect();flush()"></span><button class="burger" id="burger" aria-label="Menu" aria-expanded="false" onclick="menu(1)"><span></span><span></span><span></span></button></header><main id="app"></main>
 <div id="dberr" class="card" style="display:none;position:fixed;left:10px;right:10px;top:calc(8px + env(safe-area-inset-top,0px));z-index:40;margin:0" onclick="this.style.display='none'">⚠️ Enregistrement partagé impossible : tes données restent sur cet appareil. Touche pour fermer.</div>
 <div id="drawer"><div class="dbg" onclick="menu(0)"></div><nav id="nav" aria-label="Navigation"></nav></div><div id="undo"></div>
 <script src="vendor/xlsx.full.min.js"></script>

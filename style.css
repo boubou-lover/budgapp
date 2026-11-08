@@ -102,3 +102,7 @@ body{padding-bottom:40px}
 .yt th{color:var(--mu);font-weight:600}
 .yt th:first-child,.yt td:first-child{text-align:left;position:sticky;left:0;background:var(--card);z-index:1;font-weight:600}
 .yt td.pos{color:var(--pos)}.yt td.neg{color:var(--neg)}.yt .tot{font-weight:700}
+
+/* ===== État de synchronisation ===== */
+.sync{margin-left:auto;font-size:12px;padding:6px 11px;border-radius:99px;background:color-mix(in srgb,#e67e22 18%,var(--card));cursor:pointer;white-space:nowrap}
+.sync+.burger{margin-left:10px}

@@ -39,6 +39,22 @@
 - Après la première visite, l'app s'ouvre **sans réseau** (fichiers gardés dans le navigateur).
 - Les fichiers de l'app sont chargés **réseau d'abord** : quand tu remplaces des fichiers sur GitHub, la nouvelle version s'applique à l'ouverture suivante avec réseau. Les bibliothèques et images viennent du cache.
 - Supabase n'est **jamais** mis en cache : les données viennent toujours du serveur.
-- Hors connexion, l'app passe en mode local et garde tes saisies sur l'appareil ; à la reconnexion elles sont **fusionnées** avec les données du serveur (une opération supprimée hors ligne peut réapparaître).
+- Hors connexion, l'app passe en mode local et garde tes saisies ; voir « Synchronisation fiable » ci-dessous.
 - Pour forcer le renouvellement du cache après une grosse mise à jour : changer `V='budgapp-v1'` en `V='budgapp-v2'` dans `sw.js`.
 - Le cache ne fonctionne qu'en HTTPS (GitHub Pages convient) et n'existe pas sur la version claude.ai.
+
+## Synchronisation fiable (file d'attente)
+- Chaque modification est d'abord enregistrée sur l'appareil, puis placée dans une **file d'attente** (`budget_outbox`). Elle n'en sort que lorsque **Supabase a confirmé** l'écriture.
+- **Pastille dans l'en-tête** : « ⟳ 2 » = envoi en cours ; « ⚠ 2 en attente » = hors ligne ou refus du serveur. Toucher la pastille relance l'envoi.
+- **Reprise automatique** : nouvel essai à chaque retour du réseau, à chaque réouverture de l'app, toutes les 30 s, et avec un délai croissant après un échec.
+- **Démarrage sans réseau** : l'app s'ouvre en mode local puis se reconnecte seule.
+- **Rechargement avant confirmation** : les saisies en attente ne sont jamais écrasées par l'état du serveur ; elles sont envoyées ensuite.
+- **Fusion** : avant d'écrire un mois, l'app relit le serveur et conserve les ajouts faits ailleurs. Les suppressions sont propagées (« pierres tombales » gardées 90 jours) pour qu'une opération supprimée ne réapparaisse pas.
+- **Limite** : si deux personnes modifient la **même opération** en même temps, la dernière écriture l'emporte.
+
+## Sécurité des données (restauration, stockage, serveur)
+- **Sauvegarde JSON** : le fichier est entièrement vérifié **avant** toute modification (taille ≤ 12 Mo, structure, dates, montants). Au moindre défaut, il est **refusé** et rien ne change.
+- **Normalisation** : identifiants limités à `A-Z a-z 0-9 _ -` (sinon régénérés), catégories inconnues remplacées par « Autre », textes nettoyés et bornés, règles/budgets/récurrents/enveloppes validés un par un.
+- **Pas de code dans le HTML** : les identifiants passent par des attributs `data-*` et tout texte affiché est échappé, de sorte qu'un fichier piégé ne peut plus exécuter de script.
+- Les mêmes contrôles s'appliquent aux données lues dans le **stockage local** et à celles reçues de **Supabase** (un compte de la famille compromis ne peut pas injecter de code chez les autres).
+- Il n'y a pas encore de politique CSP (elle demanderait de supprimer tous les gestionnaires `onclick` en ligne).

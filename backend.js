@@ -1,6 +1,7 @@
 /* Adaptateur Supabase : fournit à app.js les mêmes fonctions que sur claude.ai (user, db, downloads).
    Si config.js n'est pas rempli ou si la connexion échoue, l'app reste en mode local. */
 (function(){
+ window.BUDGET_BACKEND='supabase';
  var C=window.BUDGET_CONFIG||{},sb=null,pend=null;
  var ST={getItem:function(k){try{return sessionStorage.getItem(k)||localStorage.getItem(k)}catch(e){return null}},
   setItem:function(k,v){try{(localStorage.getItem('budget_rm')==='0'?sessionStorage:localStorage).setItem(k,v)}catch(e){}},
@@ -29,13 +30,15 @@
   if(pend)return pend;
   pend=(async function(){var c=client();if(!c)return null;
    try{var r=await c.auth.getSession();if(r.data&&r.data.session)return r.data.session;
-    if(r.error||navigator.onLine===false){why('Hors connexion : mode local, resynchronisation à la reconnexion');return null}}
-   catch(e){why('Supabase injoignable : '+(e&&e.message||e));return null}
+    if(r.error||navigator.onLine===false){why('Hors connexion : mode local, resynchronisation à la reconnexion');pend=null;return null}}
+   catch(e){why('Supabase injoignable : '+(e&&e.message||e));pend=null;return null}
    return login(c)})();
   return pend}
  var DB={
   doc:function(path){var id=String(path).split('/').slice(1).join('/');
-   return{set:async function(o){var r=await client().from('budget_docs').upsert({id:id,data:o,updated_at:new Date().toISOString()});if(r.error)throw r.error}}},
+   return{
+    set:async function(o){var r=await client().from('budget_docs').upsert({id:id,data:o,updated_at:new Date().toISOString()}).select('id');if(r.error)throw r.error;if(!r.data||!r.data.length)throw new Error('écriture non confirmée par le serveur')},
+    get:async function(){var r=await client().from('budget_docs').select('data').eq('id',id).maybeSingle();if(r.error)throw r.error;return r.data?r.data.data:null}}},
   collection:function(){return{onSnapshot:function(cb,err){
    var load=async function(){var r=await client().from('budget_docs').select('id,data');
     if(r.error){if(err)err(r.error);return}
